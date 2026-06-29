@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gra egzaminacyjna – Neurologia</title>
+    <title>Baza pytań – Neurologia (Tryb Nauki)</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -58,7 +58,7 @@
         }
         .progress-fill {
             height: 100%;
-            background-color: #3b82f6;
+            background-color: #10b981;
             width: 0%;
             transition: width 0.3s;
         }
@@ -75,24 +75,6 @@
             flex-grow: 1;
             padding-right: 20px;
         }
-        .btn-fav {
-            background-color: #f1f5f9;
-            border: 1px solid #e2e8f0;
-            color: #475569;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            white-space: nowrap;
-        }
-        .btn-fav.active {
-            background-color: #fef08a;
-            border-color: #fde047;
-            color: #854d0e;
-        }
         .options-container {
             display: flex;
             flex-direction: column;
@@ -103,23 +85,15 @@
             border: 1px solid #cbd5e1;
             padding: 15px;
             border-radius: 8px;
-            cursor: pointer;
             background-color: #ffffff;
-            transition: 0.2s;
             font-size: 1rem;
-        }
-        .option:hover {
-            background-color: #f8fafc;
         }
         .option.correct {
             background-color: #dcfce7;
             border-color: #86efac;
             color: #166534;
-        }
-        .option.wrong {
-            background-color: #fee2e2;
-            border-color: #fca5a5;
-            color: #991b1b;
+            font-weight: 700;
+            box-shadow: 0 2px 5px rgba(22, 101, 52, 0.1);
         }
         .controls {
             display: flex;
@@ -137,8 +111,8 @@
             font-weight: 500;
             transition: 0.2s;
         }
-        .btn-primary { background-color: #3b82f6; color: white; }
-        .btn-primary:hover { background-color: #2563eb; }
+        .btn-primary { background-color: #10b981; color: white; }
+        .btn-primary:hover { background-color: #059669; }
         .btn-secondary { background-color: #e2e8f0; color: #475569; }
         .btn-secondary:hover { background-color: #cbd5e1; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -155,32 +129,19 @@
             border-radius: 8px;
             text-align: center;
         }
-        .stats-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
-            background-color: #f8fafc;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-        }
-        .stat-box { display: flex; flex-direction: column; }
-        .stat-num { font-size: 1.25rem; font-weight: 700; color: #0f172a; }
-        .stat-label { font-size: 0.85rem; color: #64748b; }
-        .msg { font-size: 0.85rem; color: #64748b; margin-top: 15px; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>Gra egzaminacyjna – Neurologia</h1>
+        <h1>Baza pytań – Neurologia (Tryb Nauki)</h1>
         <p id="total-questions-info">59 pytań</p>
     </div>
 
     <div class="progress-info">
         <span id="progress-text">Pytanie 1 / 59</span>
-        <span id="score-text">Wynik: 0 dobrych, 0 złych</span>
+        <span>Poprawna odpowiedź jest zaznaczona na zielono</span>
     </div>
     <div class="progress-bar">
         <div class="progress-fill" id="progress-fill"></div>
@@ -188,7 +149,6 @@
 
     <div class="question-header">
         <div class="question-text" id="question-text">Ładowanie pytania...</div>
-        <button class="btn-fav" id="btn-fav" onclick="toggleFavorite()">★ Dodaj do ulubionych</button>
     </div>
 
     <div class="options-container" id="options-container">
@@ -203,28 +163,7 @@
             <input type="number" id="jump-input" placeholder="Nr pytania" min="1">
             <button class="btn btn-primary" onclick="jumpToQuestion()">Przejdź</button>
         </div>
-
-        <button class="btn btn-secondary" onclick="shuffleQuestions()">Wymieszaj pytania</button>
-        <button class="btn btn-secondary" onclick="restartQuiz()">Restart</button>
-        <button class="btn btn-secondary" onclick="toggleMode()" id="mode-btn">Ucz się ulubionych</button>
     </div>
-
-    <div class="stats-container">
-        <div class="stat-box">
-            <span class="stat-num" id="stat-good">0</span>
-            <span class="stat-label">dobrze</span>
-        </div>
-        <div class="stat-box">
-            <span class="stat-num" id="stat-bad">0</span>
-            <span class="stat-label">źle</span>
-        </div>
-        <div class="stat-box">
-            <span class="stat-num" id="stat-perc">0%</span>
-            <span class="stat-label">wynik</span>
-        </div>
-    </div>
-    
-    <div class="msg">Po kliknięciu odpowiedzi pojawi się komunikat, czy jest poprawna.</div>
 </div>
 
 <script>
@@ -290,53 +229,21 @@
         { q: "59. Prawidłowa pozycja w ostrym udarze niedokrwiennym:", o: ["A. Pozycja Trendelenburga", "B. Pozycja półsiedząca", "C. Pozycja grzbietowa z głową uniesioną o około 20 stopni", "D. Pozycja z opuszczonymi nogami"], c: 2 }
     ];
 
-    // Zmienne przypisujące każdemu pytaniu jego oryginalne ID, aby ulubione działały sprawnie po wymieszaniu
-    let activeData = allQuizData.map((item, index) => ({ ...item, originalId: index }));
-    let favorites = JSON.parse(localStorage.getItem('neurologiaFavs')) || [];
     let currentQuiz = 0;
-    let scoreGood = 0;
-    let scoreBad = 0;
-    let answeredQuestions = new Set();
-    let isFavMode = false;
 
     // Elementy DOM
     const questionText = document.getElementById('question-text');
     const optionsContainer = document.getElementById('options-container');
-    const totalQuestionsInfo = document.getElementById('total-questions-info');
     const progressText = document.getElementById('progress-text');
-    const scoreText = document.getElementById('score-text');
     const progressFill = document.getElementById('progress-fill');
     const btnPrev = document.getElementById('btn-prev');
     const btnNext = document.getElementById('btn-next');
     const jumpInput = document.getElementById('jump-input');
-    const btnFav = document.getElementById('btn-fav');
-    const modeBtn = document.getElementById('mode-btn');
-
-    function initQuiz() {
-        totalQuestionsInfo.innerText = `${activeData.length} pytań`;
-        loadQuestion();
-    }
 
     function loadQuestion() {
-        if(activeData.length === 0) {
-            questionText.innerText = "Brak pytań w tej sekcji!";
-            optionsContainer.innerHTML = '';
-            updateStats();
-            return;
-        }
-
-        const currentData = activeData[currentQuiz];
+        const currentData = allQuizData[currentQuiz];
         questionText.innerText = currentData.q;
         optionsContainer.innerHTML = '';
-
-        // Ulubione
-        if (favorites.includes(currentData.originalId)) {
-            btnFav.classList.add('active');
-            btnFav.innerText = "★ Usuń z ulubionych";
-        } else {
-            btnFav.classList.remove('active');
-            btnFav.innerText = "☆ Dodaj do ulubionych";
-        }
 
         // Render opcji
         currentData.o.forEach((option, index) => {
@@ -344,15 +251,9 @@
             div.classList.add('option');
             div.innerText = option;
             
-            // Sprawdź czy już odpowiedziano na to pytanie
-            if (answeredQuestions.has(currentData.originalId)) {
-                if (index === currentData.c) {
-                    div.classList.add('correct');
-                } else if (currentData.userAnswer === index) {
-                    div.classList.add('wrong');
-                }
-            } else {
-                div.onclick = () => selectAnswer(index, div);
+            // Od razu podświetla poprawną odpowiedź
+            if (index === currentData.c) {
+                div.classList.add('correct');
             }
             
             optionsContainer.appendChild(div);
@@ -360,51 +261,20 @@
 
         // Kontrolki
         btnPrev.disabled = currentQuiz === 0;
-        btnNext.disabled = currentQuiz === activeData.length - 1;
+        btnNext.disabled = currentQuiz === allQuizData.length - 1;
         jumpInput.value = currentQuiz + 1;
 
         updateProgress();
     }
 
-    function selectAnswer(selectedIndex, divEl) {
-        const currentData = activeData[currentQuiz];
-        if (answeredQuestions.has(currentData.originalId)) return;
-
-        answeredQuestions.add(currentData.originalId);
-        currentData.userAnswer = selectedIndex;
-
-        const allOptions = optionsContainer.children;
-        allOptions[currentData.c].classList.add('correct'); // Pokaż dobrą
-
-        if (selectedIndex === currentData.c) {
-            scoreGood++;
-        } else {
-            divEl.classList.add('wrong'); // Pokaż błąd
-            scoreBad++;
-        }
-
-        updateStats();
-    }
-
     function updateProgress() {
-        if(activeData.length === 0) return;
-        progressText.innerText = `Pytanie ${currentQuiz + 1} / ${activeData.length}`;
-        const percent = ((currentQuiz + 1) / activeData.length) * 100;
+        progressText.innerText = `Pytanie ${currentQuiz + 1} / ${allQuizData.length}`;
+        const percent = ((currentQuiz + 1) / allQuizData.length) * 100;
         progressFill.style.width = `${percent}%`;
     }
 
-    function updateStats() {
-        scoreText.innerText = `Wynik: ${scoreGood} dobrych, ${scoreBad} złych`;
-        document.getElementById('stat-good').innerText = scoreGood;
-        document.getElementById('stat-bad').innerText = scoreBad;
-        
-        let totalAnswered = scoreGood + scoreBad;
-        let perc = totalAnswered === 0 ? 0 : Math.round((scoreGood / totalAnswered) * 100);
-        document.getElementById('stat-perc').innerText = `${perc}%`;
-    }
-
     function nextQuestion() {
-        if (currentQuiz < activeData.length - 1) {
+        if (currentQuiz < allQuizData.length - 1) {
             currentQuiz++;
             loadQuestion();
         }
@@ -419,75 +289,16 @@
 
     function jumpToQuestion() {
         let val = parseInt(jumpInput.value);
-        if (val >= 1 && val <= activeData.length) {
+        if (val >= 1 && val <= allQuizData.length) {
             currentQuiz = val - 1;
             loadQuestion();
         } else {
-            alert(`Wpisz liczbę od 1 do ${activeData.length}`);
+            alert(`Wpisz liczbę od 1 do ${allQuizData.length}`);
         }
-    }
-
-    function shuffleQuestions() {
-        // Mieszanie algorytmem Fishera-Yatesa
-        for (let i = activeData.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [activeData[i], activeData[j]] = [activeData[j], activeData[i]];
-        }
-        currentQuiz = 0;
-        loadQuestion();
-    }
-
-    function restartQuiz() {
-        scoreGood = 0;
-        scoreBad = 0;
-        currentQuiz = 0;
-        answeredQuestions.clear();
-        activeData.forEach(q => q.userAnswer = null);
-        updateStats();
-        loadQuestion();
-    }
-
-    function toggleFavorite() {
-        if(activeData.length === 0) return;
-        const currentData = activeData[currentQuiz];
-        const id = currentData.originalId;
-
-        if (favorites.includes(id)) {
-            favorites = favorites.filter(favId => favId !== id);
-        } else {
-            favorites.push(id);
-        }
-        
-        localStorage.setItem('neurologiaFavs', JSON.stringify(favorites));
-        loadQuestion();
-    }
-
-    function toggleMode() {
-        isFavMode = !isFavMode;
-        if (isFavMode) {
-            modeBtn.innerText = "Wszystkie pytania";
-            modeBtn.classList.remove('btn-secondary');
-            modeBtn.classList.add('btn-primary');
-            
-            // Filtruj tylko ulubione
-            activeData = allQuizData
-                .map((item, index) => ({ ...item, originalId: index }))
-                .filter(item => favorites.includes(item.originalId));
-                
-        } else {
-            modeBtn.innerText = "Ucz się ulubionych";
-            modeBtn.classList.remove('btn-primary');
-            modeBtn.classList.add('btn-secondary');
-            
-            // Wróć do wszystkich
-            activeData = allQuizData.map((item, index) => ({ ...item, originalId: index }));
-        }
-        
-        restartQuiz();
     }
 
     // Start
-    initQuiz();
+    loadQuestion();
 </script>
 
 </body>
