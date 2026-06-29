@@ -3,73 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baza pytań: Neurologia</title>
+    <title>Gra egzaminacyjna – Neurologia</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            background-color: #f4f7fb;
+            color: #1e293b;
             margin: 0;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
             box-sizing: border-box;
         }
-        .quiz-container {
-            background-color: #fff;
+        .container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 800px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 700px;
-        }
-        h2 { margin-top: 0; font-size: 1.3rem; line-height: 1.5; }
-        .option {
-            display: block;
-            margin: 10px 0;
-            padding: 12px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid #e9ecef;
-        }
-        .option:hover { background-color: #e2e6ea; }
-        .option.correct { background-color: #d4edda; border-color: #c3e6cb; }
-        .option.wrong { background-color: #f8d7da; border-color: #f5c6cb; }
-        .option input { margin-right: 12px; transform: scale(1.2); }
-        button {
             margin-top: 20px;
-            padding: 12px 24px;
-            background-color: #007bff;
-            color: white;
-            border: none;
+        }
+        .header {
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 1.5rem;
+            margin: 0 0 5px 0;
+            color: #0f172a;
+        }
+        .header p {
+            color: #64748b;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: #e2e8f0;
+            border-radius: 3px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #3b82f6;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin: 0;
+            flex-grow: 1;
+            padding-right: 20px;
+        }
+        .btn-fav {
+            background-color: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            padding: 8px 12px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 1.1rem;
-            width: 100%;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
         }
-        button:hover { background-color: #0056b3; }
-        #progress { margin-bottom: 15px; font-weight: bold; color: #6c757d; }
-        #result { margin-top: 20px; font-weight: bold; font-size: 1.3rem; text-align: center; }
+        .btn-fav.active {
+            background-color: #fef08a;
+            border-color: #fde047;
+            color: #854d0e;
+        }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .option {
+            border: 1px solid #cbd5e1;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #ffffff;
+            transition: 0.2s;
+            font-size: 1rem;
+        }
+        .option:hover {
+            background-color: #f8fafc;
+        }
+        .option.correct {
+            background-color: #dcfce7;
+            border-color: #86efac;
+            color: #166534;
+        }
+        .option.wrong {
+            background-color: #fee2e2;
+            border-color: #fca5a5;
+            color: #991b1b;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .btn-primary { background-color: #3b82f6; color: white; }
+        .btn-primary:hover { background-color: #2563eb; }
+        .btn-secondary { background-color: #e2e8f0; color: #475569; }
+        .btn-secondary:hover { background-color: #cbd5e1; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .jump-container {
+            display: flex;
+            gap: 5px;
+            margin: 0 auto;
+        }
+        .jump-container input {
+            width: 80px;
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            background-color: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .stat-box { display: flex; flex-direction: column; }
+        .stat-num { font-size: 1.25rem; font-weight: 700; color: #0f172a; }
+        .stat-label { font-size: 0.85rem; color: #64748b; }
+        .msg { font-size: 0.85rem; color: #64748b; margin-top: 15px; text-align: center; }
     </style>
 </head>
 <body>
 
-<div class="quiz-container">
-    <div id="quiz">
-        <div id="progress">Pytanie 1 z 59</div>
-        <h2 id="question">Ładowanie pytania...</h2>
-        <div id="options"></div>
-        <button id="submit">Sprawdź odpowiedź</button>
+<div class="container">
+    <div class="header">
+        <h1>Gra egzaminacyjna – Neurologia</h1>
+        <p id="total-questions-info">59 pytań</p>
     </div>
-    <div id="result"></div>
+
+    <div class="progress-info">
+        <span id="progress-text">Pytanie 1 / 59</span>
+        <span id="score-text">Wynik: 0 dobrych, 0 złych</span>
+    </div>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <div class="question-header">
+        <div class="question-text" id="question-text">Ładowanie pytania...</div>
+        <button class="btn-fav" id="btn-fav" onclick="toggleFavorite()">★ Dodaj do ulubionych</button>
+    </div>
+
+    <div class="options-container" id="options-container">
+        <!-- Opcje generowane przez JS -->
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-secondary" id="btn-prev" onclick="prevQuestion()">Wstecz</button>
+        <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()">Następne</button>
+        
+        <div class="jump-container">
+            <input type="number" id="jump-input" placeholder="Nr pytania" min="1">
+            <button class="btn btn-primary" onclick="jumpToQuestion()">Przejdź</button>
+        </div>
+
+        <button class="btn btn-secondary" onclick="shuffleQuestions()">Wymieszaj pytania</button>
+        <button class="btn btn-secondary" onclick="restartQuiz()">Restart</button>
+        <button class="btn btn-secondary" onclick="toggleMode()" id="mode-btn">Ucz się ulubionych</button>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-box">
+            <span class="stat-num" id="stat-good">0</span>
+            <span class="stat-label">dobrze</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-num" id="stat-bad">0</span>
+            <span class="stat-label">źle</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-num" id="stat-perc">0%</span>
+            <span class="stat-label">wynik</span>
+        </div>
+    </div>
+    
+    <div class="msg">Po kliknięciu odpowiedzi pojawi się komunikat, czy jest poprawna.</div>
 </div>
 
 <script>
-    const quizData = [
+    const allQuizData = [
         { q: "1. Podawanie preparatu Gilenya u chorych na SM może powodować:", o: ["A. Tachykardię", "B. Wzrost RR", "C. Bradykardię", "D. Spadek RR"], c: 2 },
         { q: "2. Natalizumab zaliczamy do przeciwciał monoklonalnych i podajemy go:", o: ["A. Doustnie 1x dziennie przed posiłkiem", "B. Dożylnie co 4 tygodnie we wlewie dożylnym przez 1 godzinę", "C. Dożylnie co 3 miesiące w pompie infuzyjnej przez 4 godziny", "D. 120 mg dwa razy na dobę..."], c: 1 },
         { q: "3. O jakim powikłaniu poinformujesz pacjenta przed podaniem Mitoxantronu:", o: ["A. Niebiesko-zielone zabarwienie moczu", "B. Objawy grypopodobne", "C. Ból i obrzęk w miejscu wkłucia", "D. Przejściowe nasilenie objawów SM"], c: 0 },
@@ -131,74 +290,204 @@
         { q: "59. Prawidłowa pozycja w ostrym udarze niedokrwiennym:", o: ["A. Pozycja Trendelenburga", "B. Pozycja półsiedząca", "C. Pozycja grzbietowa z głową uniesioną o około 20 stopni", "D. Pozycja z opuszczonymi nogami"], c: 2 }
     ];
 
-    const questionEl = document.getElementById('question');
-    const optionsEl = document.getElementById('options');
-    const submitBtn = document.getElementById('submit');
-    const resultEl = document.getElementById('result');
-    const progressEl = document.getElementById('progress');
-
+    // Zmienne przypisujące każdemu pytaniu jego oryginalne ID, aby ulubione działały sprawnie po wymieszaniu
+    let activeData = allQuizData.map((item, index) => ({ ...item, originalId: index }));
+    let favorites = JSON.parse(localStorage.getItem('neurologiaFavs')) || [];
     let currentQuiz = 0;
-    let score = 0;
-    let answered = false;
+    let scoreGood = 0;
+    let scoreBad = 0;
+    let answeredQuestions = new Set();
+    let isFavMode = false;
 
-    function loadQuiz() {
-        answered = false;
-        submitBtn.innerText = "Sprawdź odpowiedź";
-        optionsEl.innerHTML = '';
-        const currentData = quizData[currentQuiz];
-        
-        progressEl.innerText = `Pytanie ${currentQuiz + 1} z ${quizData.length}`;
-        questionEl.innerText = currentData.q;
+    // Elementy DOM
+    const questionText = document.getElementById('question-text');
+    const optionsContainer = document.getElementById('options-container');
+    const totalQuestionsInfo = document.getElementById('total-questions-info');
+    const progressText = document.getElementById('progress-text');
+    const scoreText = document.getElementById('score-text');
+    const progressFill = document.getElementById('progress-fill');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const jumpInput = document.getElementById('jump-input');
+    const btnFav = document.getElementById('btn-fav');
+    const modeBtn = document.getElementById('mode-btn');
 
-        currentData.o.forEach((option, index) => {
-            const label = document.createElement('label');
-            label.classList.add('option');
-            label.innerHTML = `<input type="radio" name="answer" value="${index}"> ${option}`;
-            optionsEl.appendChild(label);
-        });
+    function initQuiz() {
+        totalQuestionsInfo.innerText = `${activeData.length} pytań`;
+        loadQuestion();
     }
 
-    function getSelected() {
-        let answer;
-        document.querySelectorAll('input[name="answer"]').forEach(el => {
-            if(el.checked) answer = el.value;
-        });
-        return answer;
-    }
-
-    submitBtn.addEventListener('click', () => {
-        if (!answered) {
-            const answer = getSelected();
-            if (answer !== undefined) {
-                answered = true;
-                const correctIndex = quizData[currentQuiz].c;
-                const labels = document.querySelectorAll('.option');
-                
-                // Kolorowanie odpowiedzi
-                labels[correctIndex].classList.add('correct');
-                if (Number(answer) === correctIndex) {
-                    score++;
-                } else {
-                    labels[answer].classList.add('wrong');
-                }
-                
-                submitBtn.innerText = "Następne pytanie";
-            } else {
-                alert("Proszę wybrać odpowiedź!");
-            }
-        } else {
-            currentQuiz++;
-            if (currentQuiz < quizData.length) {
-                loadQuiz();
-            } else {
-                document.getElementById('quiz').style.display = 'none';
-                let perc = Math.round((score / quizData.length) * 100);
-                resultEl.innerHTML = `Egzamin zakończony!<br><br> Twój wynik: ${score} / ${quizData.length} (${perc}%)<br><br> <button onclick="location.reload()">Rozwiąż ponownie</button>`;
-            }
+    function loadQuestion() {
+        if(activeData.length === 0) {
+            questionText.innerText = "Brak pytań w tej sekcji!";
+            optionsContainer.innerHTML = '';
+            updateStats();
+            return;
         }
-    });
 
-    loadQuiz();
+        const currentData = activeData[currentQuiz];
+        questionText.innerText = currentData.q;
+        optionsContainer.innerHTML = '';
+
+        // Ulubione
+        if (favorites.includes(currentData.originalId)) {
+            btnFav.classList.add('active');
+            btnFav.innerText = "★ Usuń z ulubionych";
+        } else {
+            btnFav.classList.remove('active');
+            btnFav.innerText = "☆ Dodaj do ulubionych";
+        }
+
+        // Render opcji
+        currentData.o.forEach((option, index) => {
+            const div = document.createElement('div');
+            div.classList.add('option');
+            div.innerText = option;
+            
+            // Sprawdź czy już odpowiedziano na to pytanie
+            if (answeredQuestions.has(currentData.originalId)) {
+                if (index === currentData.c) {
+                    div.classList.add('correct');
+                } else if (currentData.userAnswer === index) {
+                    div.classList.add('wrong');
+                }
+            } else {
+                div.onclick = () => selectAnswer(index, div);
+            }
+            
+            optionsContainer.appendChild(div);
+        });
+
+        // Kontrolki
+        btnPrev.disabled = currentQuiz === 0;
+        btnNext.disabled = currentQuiz === activeData.length - 1;
+        jumpInput.value = currentQuiz + 1;
+
+        updateProgress();
+    }
+
+    function selectAnswer(selectedIndex, divEl) {
+        const currentData = activeData[currentQuiz];
+        if (answeredQuestions.has(currentData.originalId)) return;
+
+        answeredQuestions.add(currentData.originalId);
+        currentData.userAnswer = selectedIndex;
+
+        const allOptions = optionsContainer.children;
+        allOptions[currentData.c].classList.add('correct'); // Pokaż dobrą
+
+        if (selectedIndex === currentData.c) {
+            scoreGood++;
+        } else {
+            divEl.classList.add('wrong'); // Pokaż błąd
+            scoreBad++;
+        }
+
+        updateStats();
+    }
+
+    function updateProgress() {
+        if(activeData.length === 0) return;
+        progressText.innerText = `Pytanie ${currentQuiz + 1} / ${activeData.length}`;
+        const percent = ((currentQuiz + 1) / activeData.length) * 100;
+        progressFill.style.width = `${percent}%`;
+    }
+
+    function updateStats() {
+        scoreText.innerText = `Wynik: ${scoreGood} dobrych, ${scoreBad} złych`;
+        document.getElementById('stat-good').innerText = scoreGood;
+        document.getElementById('stat-bad').innerText = scoreBad;
+        
+        let totalAnswered = scoreGood + scoreBad;
+        let perc = totalAnswered === 0 ? 0 : Math.round((scoreGood / totalAnswered) * 100);
+        document.getElementById('stat-perc').innerText = `${perc}%`;
+    }
+
+    function nextQuestion() {
+        if (currentQuiz < activeData.length - 1) {
+            currentQuiz++;
+            loadQuestion();
+        }
+    }
+
+    function prevQuestion() {
+        if (currentQuiz > 0) {
+            currentQuiz--;
+            loadQuestion();
+        }
+    }
+
+    function jumpToQuestion() {
+        let val = parseInt(jumpInput.value);
+        if (val >= 1 && val <= activeData.length) {
+            currentQuiz = val - 1;
+            loadQuestion();
+        } else {
+            alert(`Wpisz liczbę od 1 do ${activeData.length}`);
+        }
+    }
+
+    function shuffleQuestions() {
+        // Mieszanie algorytmem Fishera-Yatesa
+        for (let i = activeData.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [activeData[i], activeData[j]] = [activeData[j], activeData[i]];
+        }
+        currentQuiz = 0;
+        loadQuestion();
+    }
+
+    function restartQuiz() {
+        scoreGood = 0;
+        scoreBad = 0;
+        currentQuiz = 0;
+        answeredQuestions.clear();
+        activeData.forEach(q => q.userAnswer = null);
+        updateStats();
+        loadQuestion();
+    }
+
+    function toggleFavorite() {
+        if(activeData.length === 0) return;
+        const currentData = activeData[currentQuiz];
+        const id = currentData.originalId;
+
+        if (favorites.includes(id)) {
+            favorites = favorites.filter(favId => favId !== id);
+        } else {
+            favorites.push(id);
+        }
+        
+        localStorage.setItem('neurologiaFavs', JSON.stringify(favorites));
+        loadQuestion();
+    }
+
+    function toggleMode() {
+        isFavMode = !isFavMode;
+        if (isFavMode) {
+            modeBtn.innerText = "Wszystkie pytania";
+            modeBtn.classList.remove('btn-secondary');
+            modeBtn.classList.add('btn-primary');
+            
+            // Filtruj tylko ulubione
+            activeData = allQuizData
+                .map((item, index) => ({ ...item, originalId: index }))
+                .filter(item => favorites.includes(item.originalId));
+                
+        } else {
+            modeBtn.innerText = "Ucz się ulubionych";
+            modeBtn.classList.remove('btn-primary');
+            modeBtn.classList.add('btn-secondary');
+            
+            // Wróć do wszystkich
+            activeData = allQuizData.map((item, index) => ({ ...item, originalId: index }));
+        }
+        
+        restartQuiz();
+    }
+
+    // Start
+    initQuiz();
 </script>
 
 </body>
